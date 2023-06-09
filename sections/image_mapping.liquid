@@ -1,0 +1,247 @@
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <style>
+    .cstm-product-main-section {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    
+    .cstm-product-div {
+      flex: 0 0 100%;
+      max-width: 100%;
+/*       padding: 0 15px; */
+      box-sizing: border-box;
+    }
+    
+    .cstm-product-img-section {
+      flex: 0 0 100%;
+      max-width: 100%;
+      padding: 0 15px;
+      box-sizing: border-box;
+    }
+    
+    .cstm-product-div img {
+      width: 100%;
+    }
+    
+    .tab-bottom {
+    position: absolute;
+    top: 0;
+    border: 1px solid red;
+    width: 100%;
+    height: 100%;
+}
+    .cstm-product-div {
+    position: relative;
+}
+    
+    .tablinks {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+    }
+    
+    .pulse {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      position: relative;
+      animation: animate 3s linear infinite;
+    }
+    
+    .pulse i {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 30px;
+      color: #fff;
+      height: 100%;
+      cursor: pointer;
+    }
+    
+    @keyframes animate {
+      0% {
+        box-shadow: 0 0 0 0 rgb(255, 109, 74, 0.7), 0 0 0 0 rgb(255, 109, 74, 0.7);
+      }
+      40% {
+        box-shadow: 0 0 0 50px rgb(255, 109, 74, 0), 0 0 0 0 rgb(255, 109, 74, 0.7);
+      }
+      80% {
+        box-shadow: 0 0 0 50px rgb(255, 109, 74, 0), 0 0 0 30px rgb(255, 109, 74, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgb(255, 109, 74, 0), 0 0 0 30px rgb(255, 109, 74, 0);
+      }
+    }
+    
+    .tabcontent {
+      display: none;
+    }
+    
+    .tabcontent p {
+      margin-bottom: 1rem;
+      font-size: 15px;
+      color: #1c1d1d;
+      margin-top: 5px;
+    }
+    
+    .tabcontent h3 {
+      font-weight: 600;
+    }
+    
+    input.btn.product-form__submit.button.button--secondary {
+      background: #000;
+      color: #fff;
+    }
+    .cstm-product-img-section img {
+    width: 100%;
+}
+    
+    @media (min-width: 576px) {
+      .cstm-product-div {
+        flex: 0 0 66.666667%;
+        max-width: 66.666667%;
+      }
+      
+      .cstm-product-img-section {
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+      }
+    }
+  </style>
+  <div class="cstm-product-main-section">
+    <div class="cstm-product-div">
+      <img src="{{ section.settings.image | img_url: '1000x1000' }}" />
+      <div class="tab-bottom">
+        {% for block in section.blocks %}
+        <button class="tablinks pulse" onclick="openCity(event, 'cstm-click-btn-{{ forloop.index }}')" id="defaultOpen" style="top: {{ block.settings.position_top }}%; right: {{ block.settings.position_right }}%; bottom: {{ block.settings.position_bottom }}%; left: {{ block.settings.position_left }}%;"> 
+          <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-bag" viewBox="0 0 16 16">
+            <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"/>
+          </svg>
+        </button>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="cstm-product-img-section">
+      {% for block in section.blocks %}
+      <div id="cstm-click-btn-{{ forloop.index }}" class="tabcontent">
+        {%- assign product = all_products[block.settings.featured_product] -%}
+        <a href="{{ product.url }}"> 
+          <img src="{{ product.featured_image | img_url: '600x600' }}" alt="{{product.featured_image.alt}}" />
+        </a>
+        <h3>{{ product.title }}</h3>
+        <p>{{ product.price | money}}</p>
+        <form method="post" action="/cart/add">
+          <input type="hidden" name="id" value="{{ product.variants.first.id }}" />
+          <input min="1" type="hidden" id="quantity" name="quantity" value="1"/>
+          <input type="submit" value="Add to cart" class="btn product-form__submit button button--full-width button--secondary" />
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <script>
+    function openCity(evt, cityName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(cityName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click();
+  </script>
+
+
+{% schema %}
+  {
+    "name": "Image Mapping",
+    "settings": [
+        {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    }
+    ],
+    "blocks": [
+    {
+      "type": "link",
+      "name": "Link",
+      "settings": [
+         {
+         "type": "product",
+          "id": "featured_product",
+          "label": {
+          "en": "Product"
+      }
+    },
+         {
+  "type": "range",
+  "id": "position_top",
+  "min": 1,
+  "max": 100,
+  "step": 1,
+  "unit": "%",
+  "label": "Top",
+  "default": 16
+},
+        {
+  "type": "range",
+  "id": "position_right",
+  "min": 1,
+  "max": 100,
+  "step": 1,
+  "unit": "%",
+  "label": "Right",
+  "default": 16
+},
+        {
+  "type": "range",
+  "id": "position_bottom",
+  "min": 1,
+  "max": 100,
+  "step": 1,
+  "unit": "%",
+  "label": "Bottom",
+  "default": 16
+},
+        {
+  "type": "range",
+  "id": "position_left",
+  "min": 1,
+  "max": 100,
+  "step": 1,
+  "unit": "%",
+  "label": "Left",
+  "default": 16
+}
+      ]
+    }
+    
+  ],
+      "presets": [
+    {
+      "name": "Image Mapping"
+     
+    }
+  ]
+  }
+{% endschema %}
